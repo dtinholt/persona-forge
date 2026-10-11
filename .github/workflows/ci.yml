@@ -1,0 +1,20 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Smoke test
+        run: CHROME="$(which chrome || which google-chrome)" sh tests/smoke.sh
+      - name: Stress test
+        run: CHROME="$(which chrome || which google-chrome)" sh tests/stress.sh

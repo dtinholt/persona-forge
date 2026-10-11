@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Persona Forge</title>
+<meta name="description" content="A guided builder that turns the Three Questions of delegation into an AI Persona delegation package, an SOP skeleton, a measurement blueprint, a vanilla-agent dry-run pack and a readiness check.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="forge.css">
+<style id="print-css">
+@media print{
+  @page{margin:18mm 16mm}
+  html,body{background:#fff;color:#000}
+  body>*{display:none!important}
+  body>#print-doc{display:block!important;font:400 10.5pt/1.45 var(--body);color:#000;max-width:none;padding:0}
+  #print-doc .print-head{border-top:3pt solid #000;border-bottom:1pt solid #000;padding:4pt 0 6pt;margin-bottom:10pt}
+  #print-doc h1{font-family:var(--display);font-size:20pt;margin:2pt 0 4pt}
+  #print-doc h2{font-family:var(--display);font-size:14pt;margin:14pt 0 5pt;border-bottom:.75pt solid #000;padding-bottom:2pt;break-after:avoid;page-break-after:avoid}
+  #print-doc h3{font-family:var(--display);font-size:11.5pt;margin:9pt 0 3pt;break-after:avoid;page-break-after:avoid}
+  #print-doc p,#print-doc li{max-width:none;orphans:3;widows:3}
+  #print-doc .mono{font-family:var(--mono);font-size:8pt;color:#333}
+  #print-doc hr{display:none}
+  #print-doc table{width:100%;border-collapse:collapse;margin:4pt 0 8pt;font-size:9pt;break-inside:auto}
+  #print-doc tr{break-inside:avoid;page-break-inside:avoid}
+  #print-doc th,#print-doc td{border:.5pt solid #777;padding:2.5pt 4pt;text-align:left;vertical-align:top}
+  #print-doc th{background:#eee}
+  #print-doc code{font-family:var(--mono);font-size:8.5pt}
+  #print-doc pre{font-family:var(--mono);font-size:8pt;white-space:pre-wrap;border:.5pt solid #999;padding:4pt}
+  #print-doc blockquote{margin:4pt 0;border-left:1.5pt solid #000;padding-left:6pt}
+  #print-doc ul,#print-doc ol{padding-left:14pt;margin:2pt 0 6pt}
+  #print-doc li.d1{margin-left:12pt}
+  #print-doc .signoff{break-before:page;page-break-before:always;break-inside:avoid}
+  #print-doc table.sig td{height:24pt}
+  #print-doc table.sig{table-layout:fixed}
+  #print-doc table.sig th:nth-child(1){width:28%}
+  #print-doc table.sig th:nth-child(2){width:28%}
+  #print-doc table.sig th:nth-child(3){width:28%}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#stepper">Skip to the builder</a>
+<header class="masthead">
+  <div class="frame mast">
+    <a class="brand" href="https://dinand.com/research/">Dinand Tinholt &middot; Research</a>
+    <p class="register">Persona Forge &middot; runs in your browser</p>
+  </div>
+</header>
+
+<main class="frame">
+  <section class="pagehead">
+    <p class="kicker">Delegation package builder</p>
+    <h1>Answer the Three Questions, get the package</h1>
+    <p class="lede">Answer the Three Questions of delegation, in the methodology's own wording, and a few follow-ups. As you type, the page writes the 19-section AI Persona definition, an SOP in YAML, a 5-tier measurement blueprint and the delegation-package checklist, then checks the sections against each other and against the tier. Section names come straight from the templates.</p>
+    <p class="notice">Nothing here calls a model. The Dry runs tab holds three prompts for your own models. Record each run there and the page writes its vanilla-agent log.</p>
+    <div class="toolbar" role="group" aria-label="Draft controls">
+      <label class="sr" for="sel-example">Worked example</label>
+      <select id="sel-example">
+        <option value="supplier">Supplier onboarding (Tier 3)</option>
+        <option value="ap">AP invoice exceptions (Tier 2)</option>
+        <option value="report">Weekly operations report (Tier 1)</option>
+      </select>
+      <button type="button" class="primary" id="btn-example">Load worked example</button>
+      <button type="button" id="btn-export">Export JSON</button>
+      <label class="filebtn">Import JSON<input type="file" id="file-import" accept="application/json,.json"></label>
+      <label class="filebtn">Import package (.md)<input type="file" id="file-import-md" accept=".md,.markdown,.txt,text/markdown,text/plain"></label>
+      <button type="button" id="btn-clear">Start blank</button>
+      <span id="savestate" aria-live="polite"></span>
+    </div>
+    <p class="mono">Three worked examples, one per tier path: supplier onboarding (Tier 3, with a cross-domain handoff), AP invoice exceptions (Tier 2) and a read-only weekly report drafter (Tier 1). All three are invented. Worked example; values are illustrations.</p>
+  </section>
+
+  <div class="layout">
+    <section id="stepper" aria-label="Builder steps" tabindex="-1">
+      <div class="meterline" id="meter"></div>
+      <ol class="steps-nav" id="steps-nav"></ol>
+      <div id="step-body"></div>
+    </section>
+
+    <aside class="outputs" aria-label="Generated outputs">
+      <div class="tabs" role="tablist" id="tabs" aria-label="Outputs">
+        <button type="button" role="tab" id="tab-package" data-tab="package" aria-controls="outpanel" aria-selected="true" tabindex="0">Package</button>
+        <button type="button" role="tab" id="tab-sop" data-tab="sop" aria-controls="outpanel" aria-selected="false" tabindex="-1">SOP YAML</button>
+        <button type="button" role="tab" id="tab-blueprint" data-tab="blueprint" aria-controls="outpanel" aria-selected="false" tabindex="-1">Blueprint</button>
+        <button type="button" role="tab" id="tab-checklist" data-tab="checklist" aria-controls="outpanel" aria-selected="false" tabindex="-1">Checklist</button>
+        <button type="button" role="tab" id="tab-dryrun" data-tab="dryrun" aria-controls="outpanel" aria-selected="false" tabindex="-1">Dry runs</button>
+        <button type="button" role="tab" id="tab-readiness" data-tab="readiness" aria-controls="outpanel" aria-selected="false" tabindex="-1">Readiness</button>
+        <button type="button" role="tab" id="tab-handoff" data-tab="handoff" aria-controls="outpanel" aria-selected="false" tabindex="-1">Handoff</button>
+        <button type="button" role="tab" id="tab-roundtrip" data-tab="roundtrip" aria-controls="outpanel" aria-selected="false" tabindex="-1">Import</button>
+      </div>
+      <div class="outbar" id="outbar">
+        <button type="button" id="btn-download">Download package</button>
+        <button type="button" id="btn-copy">Copy package</button>
+        <button type="button" id="btn-zip">Download all (.zip)</button>
+        <button type="button" id="btn-print">Print package</button>
+        <span class="mono" id="outmeta"></span>
+      </div>
+      <div id="outpanel" role="tabpanel" aria-labelledby="tab-package">
+        <pre class="out panel" id="out-text" tabindex="0" aria-label="Generated package"></pre>
+        <div class="panel dry" id="out-html" hidden></div>
+      </div>
+      <span class="sr" id="announce" aria-live="polite"></span>
+    </aside>
+  </div>
+</main>
+<article id="print-doc" aria-label="Printable package"></article>
+
+<footer class="frame colophon">
+  <p>Section names, tier rules, escalation tiers and measure types follow the AI-First Business Service Architecture templates: AI-Persona-Definition-Template, AI-Persona-Tier-Selection-Guide, sop-schema, Measurement-Blueprint-Template, delegation-package-checklist, vanilla-agent-log, and the Chapter 6, 7, 9 and 11 notes.</p>
+  <p>The three worked examples are invented for demonstration, and their targets, IDs, cases and values are illustrations made up for them.</p>
+  <p><a href="https://dinand.com/research/">dinand.com/research</a></p>
+  <p id="selfcheck">Self-check pending</p>
+</footer>
+<script src="forge.js"></script>
+<script src="forge-check.js"></script>
+<script src="forge-io.js"></script>
+<script src="forge-examples.js"></script>
+<script src="forge-selfcheck.js"></script>
+</body>
+</html>
